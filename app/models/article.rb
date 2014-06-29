@@ -75,7 +75,10 @@ class Article < Content
 		merge_art = Article.find(merge_id)
 		self.body = self.body + merge_art.body
 		self.extended = self.extended + merge_art.extended
-		self.comments << merge_art.comments
+		merge_art.comments.each do |com|
+			com.article = self
+			com.save
+		end
 		merge_art.destroy
 		save
 	end
