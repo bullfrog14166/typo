@@ -481,6 +481,22 @@ describe Admin::ContentController do
     it_should_behave_like 'destroy action'
     it_should_behave_like 'autosave action'
 
+    describe 'merge articles action' do
+    
+    	before do
+    	  @article1 = Factory(:article)
+    	  @article2 = Factory(:article)
+      	@comment1 = Factory(:comment, :article => @article1)
+      	@comment2 = Factory(:comment, :article => @article2)
+      end
+      
+    	it 'should merge articles' do
+    		post :merge, {'id' => @article1.id, 'merge_with' => @article2.id}
+    		assigns(:article).title.should == @article1.title
+    	end
+    
+    end
+    
     describe 'edit action' do
 
       it 'should edit article' do

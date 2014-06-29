@@ -41,6 +41,26 @@ Given /^the blog is set up$/ do
                 :profile_id => 1,
                 :name => 'admin',
                 :state => 'active'})
+  User.create!({:login => 'User1',
+                :password => 'aaaaaaaa',
+                :email => 'user1@snow.com',
+                :profile_id => 2,
+                :name => 'Non_admin_user1',
+                :state => 'active'})
+  User.create!({:login => 'User2',
+                :password => 'aaaaaaaa',
+                :email => 'user2@snow.com',
+                :profile_id => 2,
+                :name => 'Non_admin_user2',
+                :state => 'active'})
+	Article.create!({:title => 'first article',
+									 :body => 'Body 1',
+									 :state => :published,
+									 :user => User.find_by_login('User1')})
+	Article.create!({:title => 'second article',
+									 :body => 'Body 2',
+									 :state => :published,
+									 :user => User.find_by_login('User2')})
 end
 
 And /^I am logged into the admin panel$/ do
@@ -52,6 +72,28 @@ And /^I am logged into the admin panel$/ do
     page.should have_content('Login successful')
   else
     assert page.has_content?('Login successful')
+  end
+end
+
+Given /^I am logged as a non-admin user$/ do
+	visit '/accounts/logout'
+	fill_in 'user_login', :with => 'User1'
+  fill_in 'user_password', :with => 'aaaaaaaa'
+  click_button 'Login'
+  if page.respond_to? :should
+    page.should have_content('Login successful')
+  else
+    assert page.has_content?('Login successful')
+  end
+end
+
+When /^I merge it with "(.*)"$/ do |art|
+	fill_in 'merge_with', :with => Article.find_by_title(art).id
+	click_button 'Merge'
+	if page.respond_to? :should
+    page.should have_content('Merge successful')
+  else
+    assert page.has_content?('Merge successful')
   end
 end
 

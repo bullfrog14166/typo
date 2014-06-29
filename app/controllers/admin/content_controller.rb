@@ -34,9 +34,16 @@ class Admin::ContentController < Admin::BaseController
       flash[:error] = _("Error, you are not allowed to perform this action")
       return
     end
+    @merge_enabled = true if User.find(session[:user]).profile.id == 1
     new_or_edit
   end
-
+	
+	def merge
+		@article = Article.find(params[:id])
+		@article.merge_with(params[:merge_with])
+		redirect_to(:action => 'edit', :id => @article.id)
+	end
+	
   def destroy
     @record = Article.find(params[:id])
 
