@@ -79,7 +79,8 @@ class Article < Content
 			com.article = self
 			com.save
 		end
-		merge_art.destroy
+		art_to_destroy = Article.find(merge_id)
+		art_to_destroy.destroy
 		save
 	end
 
